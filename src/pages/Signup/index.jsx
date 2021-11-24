@@ -2,15 +2,17 @@ import { Container, Box, Button, TextField} from "@material-ui/core";
 import Logo from "../../assets/Logo";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useState } from "react";
+import { useHistory, Redirect } from "react-router-dom";
 import { useForm, Controller }  from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
-function Signup () {
+function Signup ({auth}) {
+
+  
 
 
   const [moduleValue, setModuleValue] = useState(
@@ -26,6 +28,8 @@ function Signup () {
       const handleNavigation = (path) => {
         return history.push(path);
       };
+      
+
 
       const schema = yup.object().shape({
         email: yup
@@ -49,6 +53,9 @@ function Signup () {
         resolver: yupResolver(schema)
       });
 
+       if (auth) {
+         return <Redirect to="/home" />;
+       }
 
       const submitFunction = ({email, password, name, bio, contact, course_module}) => {
         const user = {

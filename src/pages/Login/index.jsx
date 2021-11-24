@@ -1,13 +1,13 @@
 import { Container, Box, Button, TextField} from "@material-ui/core";
 import Logo from "../../assets/Logo";
-import {useHistory} from "react-router-dom";
+import {useHistory, Redirect} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
-function Login() {
+function Login({auth, setAuth}) {
 
     const history = useHistory();
 
@@ -32,13 +32,21 @@ function Login() {
       axios
         .post("https://kenziehub.herokuapp.com/sessions", data)
         .then((response) => {
-          handleNavigation("/home");
+          const {token, user} = response.data;
+          localStorage.setItem("@KenzieHub:token", JSON.stringify(token));
+          localStorage.setItem("@KenzieHub:user", JSON.stringify(user));
+          localStorage.setItem("@KenzieHub:id", JSON.stringify(user.id));
+          setAuth(true);
+          return handleNavigation("/home");
         })
-        .catch((response) => {
+        .catch((err) => {
             toast.error("E-mail ou senha inválidos!")
         });
     };
     
+    if(auth){
+      return <Redirect to="/home" />
+    }
 
     return (
         <>

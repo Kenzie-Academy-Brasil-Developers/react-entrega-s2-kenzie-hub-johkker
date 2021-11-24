@@ -1,4 +1,4 @@
-import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Container, Box, Grid, Avatar } from "@material-ui/core";
 import Logo from "../../assets/Logo";
 import { Toaster } from "react-hot-toast";
@@ -8,35 +8,35 @@ import { Techs } from "../../components/Techs";
 import { Works } from "../../components/Works";
 import { Info } from "../../components/Info";
 
-function Home() {
+async function Home()  {
+  
+  const history = useHistory();
+
+  if (!JSON.parse(localStorage.getItem("@KenzieHub:id"))) {
+   await history.push("/");
+  }
+
   const [techs, setTechs] = useState([]);
   const [works, setWorks] = useState([]);
-  const [refresh, setRefresh] = useState(true);
-  const [id] = useState(
-    JSON.parse(localStorage.getItem("@KenzieHub:id")) || ""
-  );
+  const [refresh, setRefresh] = useState([]);
 
   useEffect(() => {
     axios
-      .get(`https://kenziehub.herokuapp.com/users/${id}`)
+      .get(
+        `https://kenziehub.herokuapp.com/users/${JSON.parse(
+          localStorage.getItem("@KenzieHub:id")
+        )}`
+      )
       .then((response) => {
         setTechs(response.data.techs);
         setWorks(response.data.works);
       });
-      return () => {
-        setTechs([])
-        setWorks([])
-      }
   }, [refresh]);
-
-  if (id === "") {
-    return <Redirect to="/" />;
-  }
 
   return (
     <Container sx={{ flexGrow: 1, width: "100vw", height: "100vh" }}>
       <Toaster />
-      <Grid container sx={{ justifyContent: "space-between", gap: "2rem"}}>
+      <Grid container sx={{ justifyContent: "space-between", gap: "2rem" }}>
         <Grid
           item
           xs={12}

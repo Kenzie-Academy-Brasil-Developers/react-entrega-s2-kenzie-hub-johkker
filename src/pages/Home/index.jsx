@@ -8,35 +8,40 @@ import { Techs } from "../../components/Techs";
 import { Works } from "../../components/Works";
 import { Info } from "../../components/Info";
 
-function Home() {
+function Home()  {
+  
+
+   const [id] = useState(JSON.parse(localStorage.getItem("@KenzieHub:id")) || "");
+
+  
   const [techs, setTechs] = useState([]);
   const [works, setWorks] = useState([]);
   const [refresh, setRefresh] = useState(true);
-  const [id] = useState(
-    JSON.parse(localStorage.getItem("@KenzieHub:id")) || ""
-  );
 
   useEffect(() => {
     axios
-      .get(`https://kenziehub.herokuapp.com/users/${id}`)
+      .get(
+        `https://kenziehub.herokuapp.com/users/${JSON.parse(
+          localStorage.getItem("@KenzieHub:id")
+        )|| ""}`
+      )
       .then((response) => {
         setTechs(response.data.techs);
         setWorks(response.data.works);
       });
-      return () => {
-        setTechs([])
-        setWorks([])
-      }
+
+
   }, [refresh]);
 
   if (id === "") {
     return <Redirect to="/" />;
   }
 
+
   return (
     <Container sx={{ flexGrow: 1, width: "100vw", height: "100vh" }}>
       <Toaster />
-      <Grid container sx={{ justifyContent: "space-between", gap: "2rem"}}>
+      <Grid container sx={{ justifyContent: "space-between", gap: "2rem" }}>
         <Grid
           item
           xs={12}
